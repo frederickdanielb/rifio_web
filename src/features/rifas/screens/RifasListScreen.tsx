@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export function RifasListScreen() {
   const rifas = [
     { id: '1', nombre: 'Rifa SUV 2026', precioTicket: '$10.000', estado: 'Activa' },
@@ -32,12 +34,12 @@ export function RifasListScreen() {
                 <span className="font-medium text-rose-400">{rifa.estado}</span>
               </p>
             </div>
-            <button
-              type="button"
+            <Link
+              to={`/rifas/${rifa.id}`}
               className="mt-6 rounded-2xl border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-100 transition-colors hover:bg-slate-800"
             >
               Administrar
-            </button>
+            </Link>
           </article>
         ))}
       </div>
