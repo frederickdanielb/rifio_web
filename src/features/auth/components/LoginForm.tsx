@@ -9,9 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { Button } from '../../../shared/components/ui/button';
 import { Input } from '../../../shared/components/ui/input';
 import { Label } from '../../../shared/components/ui/label';
-// import { loginRequest } from '../store/authSlice';
-import { loginRequest, loginSuccess } from '../store/authSlice';
-import type { LoginRequestDto } from '../types/authTypes';
+import { loginSuccess } from '../store/authSlice';
 
 const loginSchema = z.object({
   email: z.string().email('Email invalido'),
