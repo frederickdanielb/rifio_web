@@ -10,6 +10,15 @@ export interface LoginRequestDto {
 }
 
 export interface LoginResponseDto {
-  user: AuthUser;
+  id: string;
+  nombre: string;
+  email: string;
   token: string;
+  tokenExpira: string;
+}
+
+export interface RegisterRequestDto {
+  nombre: string;
+  email: string;
+  password: string;
 }

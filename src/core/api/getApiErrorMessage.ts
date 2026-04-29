@@ -14,5 +14,13 @@ export function getApiErrorMessage(error: unknown): string {
     return responseData.message;
   }
 
+  if (responseData?.detail) {
+    return responseData.detail;
+  }
+
+  if (responseData?.title) {
+    return responseData.title;
+  }
+
   return defaultMessage;
 }

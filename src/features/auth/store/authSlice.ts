@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { AuthUser, LoginRequestDto } from '../types/authTypes';
+import type { AuthUser, LoginRequestDto, RegisterRequestDto } from '../types/authTypes';
+import { type DecodedClaims, decodeJwt } from '../../../core/api/jwtDecoder';
 
 export interface AuthState {
   user: AuthUser | null;
@@ -7,16 +8,37 @@ export interface AuthState {
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
+  claims: DecodedClaims | null;
+}
+
+function loadUserFromStorage(): AuthUser | null {
+  try {
+    const raw = localStorage.getItem('rifio_user');
+    return raw ? (JSON.parse(raw) as AuthUser) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveUserToStorage(user: AuthUser) {
+  localStorage.setItem('rifio_user', JSON.stringify(user));
+}
+
+function clearUserFromStorage() {
+  localStorage.removeItem('rifio_user');
 }
 
 const tokenFromStorage = localStorage.getItem('rifio_token');
+const initialClaims = tokenFromStorage ? decodeJwt(tokenFromStorage) : null;
+const userFromStorage = loadUserFromStorage();
 
 const initialState: AuthState = {
-  user: null,
+  user: userFromStorage,
   token: tokenFromStorage,
   isAuthenticated: Boolean(tokenFromStorage),
   loading: false,
   error: null,
+  claims: initialClaims,
 };
 
 export const authSlice = createSlice({
@@ -32,24 +54,56 @@ export const authSlice = createSlice({
       state.isAuthenticated = true;
       state.user = action.payload.user;
       state.token = action.payload.token;
+      state.claims = decodeJwt(action.payload.token);
       state.error = null;
+      saveUserToStorage(action.payload.user);
     },
     loginFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;
       state.isAuthenticated = false;
       state.error = action.payload;
     },
+    registerRequest: (state, _action: PayloadAction<RegisterRequestDto>) => {
+      state.loading = true;
+      state.error = null;
+    },
+    registerSuccess: (state, action: PayloadAction<{ user: AuthUser; token: string }>) => {
+      state.loading = false;
+      state.isAuthenticated = true;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.claims = decodeJwt(action.payload.token);
+      state.error = null;
+      saveUserToStorage(action.payload.user);
+    },
+    registerFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     logoutRequest: (state) => {
       state.loading = true;
     },
-    logoutSuccess: () => ({
-      ...initialState,
-      token: null,
-      isAuthenticated: false,
-    }),
+    logoutSuccess: () => {
+      clearUserFromStorage();
+      return {
+        ...initialState,
+        user: null,
+        token: null,
+        isAuthenticated: false,
+        claims: null,
+      };
+    },
   },
 });
 
-export const { loginRequest, loginSuccess, loginFailure, logoutRequest, logoutSuccess } =
-  authSlice.actions;
+export const {
+  loginRequest,
+  loginSuccess,
+  loginFailure,
+  registerRequest,
+  registerSuccess,
+  registerFailure,
+  logoutRequest,
+  logoutSuccess,
+} = authSlice.actions;
 export default authSlice.reducer;

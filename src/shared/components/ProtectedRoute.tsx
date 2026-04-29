@@ -1,17 +1,22 @@
 import type { ReactNode } from 'react';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../app/hooks';
 import { Navigate, Outlet } from 'react-router-dom';
-import type { RootState } from '../../app/store';
 
 interface ProtectedRouteProps {
   children?: ReactNode;
+  requiredPermission?: string;
 }
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const token = useSelector((state: RootState) => state.auth.token);
+export function ProtectedRoute({ children, requiredPermission }: ProtectedRouteProps) {
+  const token = useAppSelector((s) => s.auth.token);
+  const permissions = useAppSelector((s) => s.auth.claims?.permissions ?? []);
 
   if (!token) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (requiredPermission && !permissions.includes(requiredPermission)) {
+    return <Navigate to="/" replace />;
   }
 
   if (children) {

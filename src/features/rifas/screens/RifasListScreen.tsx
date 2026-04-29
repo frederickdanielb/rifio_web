@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { CanAccess } from '../../../shared/components/CanAccess';
 
 export function RifasListScreen() {
   const rifas = [
@@ -13,12 +14,14 @@ export function RifasListScreen() {
           <h1 className="text-3xl font-semibold text-white">Gestion de Rifas</h1>
           <p className="mt-1 text-sm text-slate-300">Administra las rifas activas de la plataforma.</p>
         </div>
-        <button
-          type="button"
-          className="rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rose-400"
-        >
-          Crear Nueva Rifa
-        </button>
+        <CanAccess permission="rifa:crear">
+          <button
+            type="button"
+            className="rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rose-400"
+          >
+            Crear Nueva Rifa
+          </button>
+        </CanAccess>
       </header>
 
       <div className="grid gap-4 lg:grid-cols-2">

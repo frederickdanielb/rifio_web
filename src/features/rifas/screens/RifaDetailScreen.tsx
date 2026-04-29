@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import type { AppDispatch } from '../../../app/store';
 import { TicketGrid } from '../../tickets/components/TicketGrid';
 import { Modal } from '../../../shared/components/ui/Modal';
-import { reserveTicketRequest } from '../../tickets/store/ticketSlice';
+import { reserveTicketRequest } from '../../tickets/store/ticketsSlice';
 
 export function RifaDetailScreen() {
   const dispatch = useDispatch<AppDispatch>();

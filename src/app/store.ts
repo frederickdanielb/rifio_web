@@ -4,7 +4,7 @@ import rootSaga from './rootSaga';
 import authReducer from '../features/auth/store/authSlice';
 import rifasReducer from '../features/rifas/store/rifasSlice';
 import ticketsReducer from '../features/tickets/store/ticketsSlice';
-import ticketReducer from '../features/tickets/store/ticketSlice';
+import uiReducer from './uiSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -13,7 +13,7 @@ export const store = configureStore({
     auth: authReducer,
     rifas: rifasReducer,
     tickets: ticketsReducer,
-    ticket: ticketReducer,
+    ui: uiReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),

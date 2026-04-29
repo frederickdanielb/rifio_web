@@ -6,17 +6,17 @@ interface TicketGridProps {
 }
 
 export function TicketGrid({ onTicketClick }: TicketGridProps) {
-  const tickets = useSelector((state: RootState) => state.ticket.tickets);
+  const tickets = useSelector((state: RootState) => state.tickets.tickets);
 
   return (
     <div className="grid grid-cols-5 gap-2 sm:grid-cols-10">
       {tickets.map((ticket) => {
         const statusClass =
           ticket.estado === 'pagado'
-          ? 'bg-emerald-500 text-white'
-          : ticket.estado === 'reservado'
-            ? 'bg-amber-500 text-white'
-            : 'bg-slate-800 text-slate-300';
+            ? 'bg-emerald-500 text-white'
+            : ticket.estado === 'reservado'
+              ? 'bg-amber-500 text-white'
+              : 'bg-slate-800 text-slate-300';
 
         return (
           <button

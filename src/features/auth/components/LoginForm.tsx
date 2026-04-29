@@ -9,7 +9,8 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { Button } from '../../../shared/components/ui/button';
 import { Input } from '../../../shared/components/ui/input';
 import { Label } from '../../../shared/components/ui/label';
-import { loginSuccess } from '../store/authSlice';
+import { loginRequest } from '../store/authSlice';
+import type { LoginRequestDto } from '../types/authTypes';
 
 const loginSchema = z.object({
   email: z.string().email('Email invalido'),
@@ -41,33 +42,14 @@ export function LoginForm() {
     }
   }, [error]);
 
-  // const onSubmit = (values: LoginSchema) => {
-  //   const payload: LoginRequestDto = {
-  //     email: values.email,
-  //     password: values.password,
-  //   };
-  //   dispatch(loginRequest(payload));
-  // };
-const onSubmit = (values: LoginSchema) => {
-    // 🔥 MOCK DE LOGIN: Comentamos la llamada real a la saga/API
-    /*
+  const onSubmit = (values: LoginSchema) => {
     const payload: LoginRequestDto = {
       email: values.email,
       password: values.password,
     };
     dispatch(loginRequest(payload));
-    */
-
-    // Simulamos que el backend respondió con éxito instantáneamente
-    dispatch(loginSuccess({
-      user: { 
-        id: '1', 
-        email: values.email, 
-        name: 'Admin Rifio' 
-      },
-      token: 'fake-jwt-token-123456789'
-    }));
   };
+
   return (
     <div className="w-full max-w-md space-y-7">
       <div className="space-y-4">

@@ -1,4 +1,4 @@
-import { Home, LogOut, Ticket, Trophy } from 'lucide-react';
+import { Home, LogOut, Users, Trophy } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { logoutRequest } from '../../../features/auth/store/authSlice';
@@ -8,7 +8,7 @@ import { cn } from '../../lib/utils';
 const navItems = [
   { to: '/', icon: Home, label: 'Dashboard' },
   { to: '/rifas', icon: Trophy, label: 'Rifas' },
-  { to: '/tickets', icon: Ticket, label: 'Tickets' },
+  { to: '/clientes', icon: Users, label: 'Clientes' },
 ];
 
 export function AppLayout() {
