@@ -22,3 +22,16 @@ export interface RegisterRequestDto {
   email: string;
   password: string;
 }
+
+export interface RegisterResponseDto {
+  id: string;
+  nombre: string;
+  email: string;
+  requiereVerificacion: boolean;
+  mensaje?: string;
+}
+
+export interface VerifyEmailRequestDto {
+  email: string;
+  token: string;
+}

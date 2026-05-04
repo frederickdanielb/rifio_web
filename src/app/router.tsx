@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { LoginScreen } from '../features/auth/screens/LoginScreen';
 import { RegisterScreen } from '../features/auth/screens/RegisterScreen';
+import { VerifyEmailScreen } from '../features/auth/screens/VerifyEmailScreen';
 import { SettingsScreen } from '../features/auth/screens/SettingsScreen';
 import { PricingScreen } from '../features/rifas/screens/PricingScreen';
 import { ClientesScreen } from '../features/clientes/screens/ClientesScreen';
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
   {
     path: '/register',
     element: <RegisterScreen />,
+  },
+  {
+    path: '/verify-email',
+    element: <VerifyEmailScreen />,
   },
   {
     path: '/',

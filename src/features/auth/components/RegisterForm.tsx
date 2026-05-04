@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { UserPlus } from 'lucide-react';
+import { MailCheck, UserPlus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
@@ -22,20 +22,12 @@ type RegisterSchema = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const { loading, error, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { loading, error, verificationMessage } = useAppSelector((state) => state.auth);
 
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: { nombre: '', email: '', password: '' },
   });
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/', { replace: true });
-      toast.success('Cuenta creada exitosamente');
-    }
-  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     if (error) {
@@ -51,6 +43,29 @@ export function RegisterForm() {
     };
     dispatch(registerRequest(payload));
   };
+
+  if (verificationMessage) {
+    return (
+      <div className="w-full max-w-md space-y-7 text-center">
+        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-400">
+          <MailCheck className="h-8 w-8" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-50">Casi listo!</h2>
+          <p className="text-sm text-slate-300">{verificationMessage}</p>
+          <p className="text-xs text-slate-400">
+            Si no encuentras el correo, revisa tu bandeja de spam.
+          </p>
+        </div>
+        <Link
+          to="/login"
+          className="inline-block rounded-2xl border border-slate-700 px-6 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800"
+        >
+          Ir al inicio de sesion
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-md space-y-7">

@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { AuthUser, LoginRequestDto, RegisterRequestDto } from '../types/authTypes';
+import type { AuthUser, LoginRequestDto, RegisterRequestDto, VerifyEmailRequestDto } from '../types/authTypes';
 import { type DecodedClaims, decodeJwt } from '../../../core/api/jwtDecoder';
 
 export interface AuthState {
@@ -9,6 +9,7 @@ export interface AuthState {
   loading: boolean;
   error: string | null;
   claims: DecodedClaims | null;
+  verificationMessage: string | null;
 }
 
 function loadUserFromStorage(): AuthUser | null {
@@ -39,6 +40,7 @@ const initialState: AuthState = {
   loading: false,
   error: null,
   claims: initialClaims,
+  verificationMessage: null,
 };
 
 export const authSlice = createSlice({
@@ -56,6 +58,7 @@ export const authSlice = createSlice({
       state.token = action.payload.token;
       state.claims = decodeJwt(action.payload.token);
       state.error = null;
+      state.verificationMessage = null;
       saveUserToStorage(action.payload.user);
     },
     loginFailure: (state, action: PayloadAction<string>) => {
@@ -66,8 +69,23 @@ export const authSlice = createSlice({
     registerRequest: (state, _action: PayloadAction<RegisterRequestDto>) => {
       state.loading = true;
       state.error = null;
+      state.verificationMessage = null;
     },
-    registerSuccess: (state, action: PayloadAction<{ user: AuthUser; token: string }>) => {
+    registerSuccess: (state, action: PayloadAction<{ message: string }>) => {
+      state.loading = false;
+      state.error = null;
+      state.verificationMessage = action.payload.message;
+    },
+    registerFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.verificationMessage = null;
+    },
+    verifyEmailRequest: (state, _action: PayloadAction<VerifyEmailRequestDto>) => {
+      state.loading = true;
+      state.error = null;
+    },
+    verifyEmailSuccess: (state, action: PayloadAction<{ user: AuthUser; token: string }>) => {
       state.loading = false;
       state.isAuthenticated = true;
       state.user = action.payload.user;
@@ -76,7 +94,24 @@ export const authSlice = createSlice({
       state.error = null;
       saveUserToStorage(action.payload.user);
     },
-    registerFailure: (state, action: PayloadAction<string>) => {
+    verifyEmailFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    googleLoginRequest: (state, _action: PayloadAction<string>) => {
+      state.loading = true;
+      state.error = null;
+    },
+    googleLoginSuccess: (state, action: PayloadAction<{ user: AuthUser; token: string }>) => {
+      state.loading = false;
+      state.isAuthenticated = true;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.claims = decodeJwt(action.payload.token);
+      state.error = null;
+      saveUserToStorage(action.payload.user);
+    },
+    googleLoginFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;
       state.error = action.payload;
     },
@@ -91,6 +126,7 @@ export const authSlice = createSlice({
         token: null,
         isAuthenticated: false,
         claims: null,
+        verificationMessage: null,
       };
     },
   },
@@ -103,6 +139,12 @@ export const {
   registerRequest,
   registerSuccess,
   registerFailure,
+  verifyEmailRequest,
+  verifyEmailSuccess,
+  verifyEmailFailure,
+  googleLoginRequest,
+  googleLoginSuccess,
+  googleLoginFailure,
   logoutRequest,
   logoutSuccess,
 } = authSlice.actions;
